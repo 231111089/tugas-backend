@@ -161,7 +161,7 @@ class _EditProfileState extends State<EditProfile> {
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             // Kembalikan data yang telah diubah ke halaman profile
                             Navigator.pop(context, {
                               'firstName': _firstNameController.text,

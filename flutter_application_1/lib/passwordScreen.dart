@@ -102,8 +102,8 @@ class _PasswordComponentState extends State<PasswordComponent> {
           ),
           const SizedBox(height: 20),
           GestureDetector(
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => ForgotPinPage()),
               );

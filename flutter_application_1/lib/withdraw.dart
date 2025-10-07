@@ -55,10 +55,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: const Text(
-          'Withdraw',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text('Withdraw', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
@@ -96,7 +93,10 @@ class _WithdrawPageState extends State<WithdrawPage> {
     return Column(
       children: [
         ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
           leading: Image.asset(
             option.logoAssetPath,
             width: 40,
@@ -110,25 +110,19 @@ class _WithdrawPageState extends State<WithdrawPage> {
           ),
           title: Text(
             option.name,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
           ),
           subtitle: Text(
             option.adminFee,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           trailing: const Icon(
             Icons.arrow_forward_ios,
             color: Colors.grey,
             size: 18,
           ),
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => CairPage(bankName: option.name),

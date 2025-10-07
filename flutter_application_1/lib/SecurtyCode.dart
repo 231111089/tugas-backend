@@ -97,9 +97,9 @@ class _SecurtyCodeState extends State<SecurtyCode> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          Navigator.push(
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => Home()),
                           );

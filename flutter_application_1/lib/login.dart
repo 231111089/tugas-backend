@@ -143,8 +143,8 @@ class _LoginComponenState extends State<LoginComponen> {
                         ),
                         onPressed:
                             _isValid
-                                ? () {
-                                  Navigator.push(
+                                ? () async {
+                                  await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => Password(),

@@ -146,12 +146,12 @@ class _AddCardButtonState extends State<AddCardButton> {
     super.dispose();
   }
 
-  void _goToPreview() {
+  void _goToPreview() async {
     if (_formKey.currentState!.validate()) {
       String number = _cardNumberController.text.trim();
       String masked = '**** **** **** ${number.substring(number.length - 4)}';
 
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => PreviewCardScreen(maskedNumber: masked),
@@ -214,7 +214,7 @@ class PreviewCardScreen extends StatelessWidget {
 
   const PreviewCardScreen({super.key, required this.maskedNumber});
 
-  void _submitCard(BuildContext context) {
+  void _submitCard(BuildContext context) async {
     PocketBuild.cards.add(maskedNumber);
     Navigator.popUntil(context, (route) => route.isFirst);
   }

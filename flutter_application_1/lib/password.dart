@@ -95,8 +95,8 @@ class _PasswordComponenState extends State<PasswordComponen> {
             ),
             SizedBox(height: 20),
             GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ForgotPinPage()),
                 );
@@ -115,9 +115,9 @@ class _PasswordComponenState extends State<PasswordComponen> {
                 ),
                 minimumSize: Size(200, 50),
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (_isPinComplete()) {
-                  Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SecurtyCode()),
                   );

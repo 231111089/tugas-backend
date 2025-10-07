@@ -454,9 +454,9 @@ class _PayTaxTabState extends State<PayTaxTab> {
       width: double.infinity,
       height: 55,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           if (_formKey.currentState!.validate()) {
-            _showPaymentConfirmation();
+            await _showPaymentConfirmation();
           }
         },
         style: ElevatedButton.styleFrom(
@@ -478,8 +478,9 @@ class _PayTaxTabState extends State<PayTaxTab> {
     );
   }
 
-  void _showPaymentConfirmation() {
-    showDialog(
+  Future<void> _showPaymentConfirmation() async {
+    // PERBAIKAN: Tipe pengembalian disesuaikan
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -507,13 +508,12 @@ class _PayTaxTabState extends State<PayTaxTab> {
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                _processPayment();
+                Navigator.of(context).pop(true);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
@@ -527,6 +527,9 @@ class _PayTaxTabState extends State<PayTaxTab> {
         );
       },
     );
+    if (confirmed == true) {
+      await _processPayment(); // Tambahkan await di sini
+    }
   }
 
   Widget _buildConfirmationRow(String label, String value) {
@@ -548,12 +551,14 @@ class _PayTaxTabState extends State<PayTaxTab> {
     );
   }
 
-  void _processPayment() {
+  Future<void> _processPayment() async {
+    // PERBAIKAN: Tipe pengembalian disesuaikan
     // Directly show success without loading dialog to avoid delays
-    _showPaymentSuccess();
+    await _showPaymentSuccess();
   }
 
-  void _showPaymentSuccess() {
+  Future<void> _showPaymentSuccess() async {
+    // PERBAIKAN: Tipe pengembalian disesuaikan
     // Generate new payment data
     final DateTime now = DateTime.now();
     final String newId =
@@ -572,7 +577,7 @@ class _PayTaxTabState extends State<PayTaxTab> {
       'period': '$_selectedMonth $_selectedYear',
     };
 
-    showDialog(
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {

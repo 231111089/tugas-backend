@@ -345,12 +345,12 @@ class _InboxState extends State<Inbox> {
               ),
           ],
         ),
-        onTap: () {
+        onTap: () async {
           setState(() {
             message.isRead = true;
           });
           // Navigate to message detail page
-          Navigator.push(
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => MessageDetailPage(message: message),
@@ -402,9 +402,9 @@ class MessageDetailPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline, color: Colors.white),
-            onPressed: () {
+            onPressed: () async {
               // Show delete confirmation
-              showDialog(
+              await showDialog(
                 context: context,
                 builder:
                     (context) => AlertDialog(

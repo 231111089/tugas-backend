@@ -34,9 +34,9 @@ class _SettingsPageState extends State<SettingsPage> {
             icon: Icons.person_outline,
             title: 'Edit Profil',
             subtitle: 'Ubah nama, email, dan nomor telepon',
-            onTap: () {
+            onTap: () async {
               // Navigasi ke halaman EditProfile yang sudah ada
-              Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder:

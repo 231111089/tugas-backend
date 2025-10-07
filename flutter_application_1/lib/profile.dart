@@ -50,60 +50,61 @@ class _ProfilePageState extends State<ProfilePage> {
   void _showQRCodeDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        contentPadding: const EdgeInsets.all(16),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'QR PROFIL',
-              style: TextStyle(fontWeight: FontWeight.bold),
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            const SizedBox(height: 8),
-            Text(
-              phoneNumber.replaceRange(
-                4,
-                phoneNumber.length - 2,
-                '*' * (phoneNumber.length - 6),
-              ),
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
-            ),
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                'asset/kodeqr.png',
-                width: 180,
-                height: 180,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              "Ajak teman yang ada didekat kamu memindai\nkode QR ini untuk memulai transaksi.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            contentPadding: const EdgeInsets.all(16),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'QR PROFIL',
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-              ),
-              child: const Text(
-                "Tutup",
-                style: TextStyle(color: Colors.white),
-              ),
+                const SizedBox(height: 8),
+                Text(
+                  phoneNumber.replaceRange(
+                    4,
+                    phoneNumber.length - 2,
+                    '*' * (phoneNumber.length - 6),
+                  ),
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'asset/kodeqr.png',
+                    width: 180,
+                    height: 180,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  "Ajak teman yang ada didekat kamu memindai\nkode QR ini untuk memulai transaksi.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    "Tutup",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -111,13 +112,17 @@ class _ProfilePageState extends State<ProfilePage> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditProfile(
-          firstName: userName.split(" ")[0],
-          lastName: userName.contains(" ") ? userName.substring(userName.indexOf(" ") + 1) : "",
-          phoneNumber: phoneNumber,
-          email: email,
-          gender: gender,
-        ),
+        builder:
+            (context) => EditProfile(
+              firstName: userName.split(" ")[0],
+              lastName:
+                  userName.contains(" ")
+                      ? userName.substring(userName.indexOf(" ") + 1)
+                      : "",
+              phoneNumber: phoneNumber,
+              email: email,
+              gender: gender,
+            ),
       ),
     );
 
@@ -166,113 +171,118 @@ class _ProfilePageState extends State<ProfilePage> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(goal.title),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Jumlah: Rp ${_formatCurrency(goal.amount.toInt())}"),
-              Text(
-                "Progress: ${(goal.progress * 100).toStringAsFixed(1)}%",
-              ),
-              if (goal.description != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text("Deskripsi: ${goal.description!}"),
-                ),
-              if (goal.targetDate != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    "Target: ${goal.targetDate!.toIso8601String().split('T')[0]}",
+      builder:
+          (context) => AlertDialog(
+            title: Text(goal.title),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Jumlah: Rp ${_formatCurrency(goal.amount.toInt())}"),
+                  Text(
+                    "Progress: ${(goal.progress * 100).toStringAsFixed(1)}%",
                   ),
-                ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _navigateToEditSaving(index);
-            },
-            child: const Text('Edit'),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() => savingGoals.removeAt(index));
-              Navigator.pop(context);
-            },
-            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text("Tambah Setoran"),
-                  content: Form(
-                    key: _depositFormKey,
-                    child: TextFormField(
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        _ThousandsSeparatorInputFormatter(),
-                      ],
-                      controller: _depositController,
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Masukkan jumlah setoran';
-                        }
-                        final clean = value.replaceAll(',', '');
-                        final amount = int.tryParse(clean);
-                        if (amount == null || amount <= 0) {
-                          return 'Masukkan jumlah yang valid';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        labelText: "Masukkan jumlah (Rp)",
+                  if (goal.description != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text("Deskripsi: ${goal.description!}"),
+                    ),
+                  if (goal.targetDate != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        "Target: ${goal.targetDate!.toIso8601String().split('T')[0]}",
                       ),
                     ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("Batal"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        if (_depositFormKey.currentState!.validate()) {
-                          final tambah = int.parse(
-                            _depositController.text.replaceAll(',', ''),
-                          );
-                          setState(() {
-                            final currentAmount = (goal.amount * goal.progress).toInt();
-                            final newProgress = ((currentAmount + tambah) / goal.amount).clamp(0.0, 1.0);
-                            savingGoals[index] = SavingGoal(
-                              title: goal.title,
-                              amount: goal.amount,
-                              progress: newProgress,
-                              description: goal.description,
-                              targetDate: goal.targetDate,
-                            );
-                          });
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: const Text("Simpan"),
-                    ),
-                  ],
-                ),
-              );
-            },
-            child: const Text('Tambah Tabungan'),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _navigateToEditSaving(index);
+                },
+                child: const Text('Edit'),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() => savingGoals.removeAt(index));
+                  Navigator.pop(context);
+                },
+                child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          title: const Text("Tambah Setoran"),
+                          content: Form(
+                            key: _depositFormKey,
+                            child: TextFormField(
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                _ThousandsSeparatorInputFormatter(),
+                              ],
+                              controller: _depositController,
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Masukkan jumlah setoran';
+                                }
+                                final clean = value.replaceAll(',', '');
+                                final amount = int.tryParse(clean);
+                                if (amount == null || amount <= 0) {
+                                  return 'Masukkan jumlah yang valid';
+                                }
+                                return null;
+                              },
+                              decoration: const InputDecoration(
+                                labelText: "Masukkan jumlah (Rp)",
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("Batal"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                if (_depositFormKey.currentState!.validate()) {
+                                  final tambah = int.parse(
+                                    _depositController.text.replaceAll(',', ''),
+                                  );
+                                  setState(() {
+                                    final currentAmount =
+                                        (goal.amount * goal.progress).toInt();
+                                    final newProgress =
+                                        ((currentAmount + tambah) / goal.amount)
+                                            .clamp(0.0, 1.0);
+                                    savingGoals[index] = SavingGoal(
+                                      title: goal.title,
+                                      amount: goal.amount,
+                                      progress: newProgress,
+                                      description: goal.description,
+                                      targetDate: goal.targetDate,
+                                    );
+                                  });
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: const Text("Simpan"),
+                            ),
+                          ],
+                        ),
+                  );
+                },
+                child: const Text('Tambah Tabungan'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -302,7 +312,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   Chip(
                     label: Text(
-                      goal.targetDate?.toIso8601String().split('T')[0] ?? "Tanpa target",
+                      goal.targetDate?.toIso8601String().split('T')[0] ??
+                          "Tanpa target",
                       style: const TextStyle(fontSize: 12),
                     ),
                     backgroundColor: Colors.deepPurple.withOpacity(0.1),
@@ -387,12 +398,13 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.isPushed
-          ? AppBar(
-              backgroundColor: Colors.deepPurple,
-              iconTheme: const IconThemeData(color: Colors.white),
-            )
-          : null,
+      appBar:
+          widget.isPushed
+              ? AppBar(
+                backgroundColor: Colors.deepPurple,
+                iconTheme: const IconThemeData(color: Colors.white),
+              )
+              : null,
       backgroundColor: Colors.deepPurple,
       body: Column(
         children: [

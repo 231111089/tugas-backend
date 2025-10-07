@@ -26,14 +26,13 @@ class TransferPage extends StatefulWidget {
 }
 
 class _TransferPageState extends State<TransferPage> {
-
   String _formatCurrency(int number) {
-  final result = number.toString().replaceAllMapped(
-    RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-    (match) => '${match[1]}.',
-  );
-  return 'Rp $result';
-}
+    final result = number.toString().replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+      (match) => '${match[1]}.',
+    );
+    return 'Rp $result';
+  }
 
   final List<Transfer> _beneficiaries = [
     Transfer(
@@ -78,92 +77,113 @@ class _TransferPageState extends State<TransferPage> {
   void _filterBeneficiaries() {
     final query = _searchController.text.toLowerCase();
     setState(() {
-      _filteredBeneficiaries = _beneficiaries.where((b) {
-        return b.name.toLowerCase().contains(query) ||
-            b.accountNumber.contains(query) ||
-            b.alias.toLowerCase().contains(query);
-      }).toList();
+      _filteredBeneficiaries =
+          _beneficiaries.where((b) {
+            return b.name.toLowerCase().contains(query) ||
+                b.accountNumber.contains(query) ||
+                b.alias.toLowerCase().contains(query);
+          }).toList();
     });
   }
 
-void _showTransferDialog(Transfer transfer) {
-  final TextEditingController _amountController = TextEditingController();
-  final ValueNotifier<String> formattedAmount = ValueNotifier('');
-  final _formKey = GlobalKey<FormState>();
-  final rootContext = context;
+  void _showTransferDialog(Transfer transfer) {
+    final TextEditingController _amountController = TextEditingController();
+    final ValueNotifier<String> formattedAmount = ValueNotifier('');
+    final _formKey = GlobalKey<FormState>();
+    final rootContext = context;
 
-  void updateFormattedAmount(String value) {
-    final amount = int.tryParse(value.replaceAll('.', ''));
-    if (amount != null && amount > 0) {
-      formattedAmount.value = _formatCurrency(amount);
-    } else {
-      formattedAmount.value = '';
+    void updateFormattedAmount(String value) {
+      final amount = int.tryParse(value.replaceAll('.', ''));
+      if (amount != null && amount > 0) {
+        formattedAmount.value = _formatCurrency(amount);
+      } else {
+        formattedAmount.value = '';
+      }
     }
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: const Text('Transfer Uang'),
+            content: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: const InputDecoration(
+                      labelText: 'Masukkan jumlah (Rp)',
+                    ),
+                    onChanged: updateFormattedAmount,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty)
+                        return 'Masukkan jumlah';
+                      final amount = int.tryParse(value);
+                      if (amount == null || amount <= 0)
+                        return 'Jumlah tidak valid';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  ValueListenableBuilder<String>(
+                    valueListenable: formattedAmount,
+                    builder: (_, value, __) {
+                      return Text(
+                        value.isNotEmpty ? 'Jumlah: $value' : '',
+                        style: const TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Batal'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    final amount = int.parse(_amountController.text);
+                    Navigator.pop(context);
+
+                    final verified = await Navigator.push<bool>(
+                      rootContext,
+                      MaterialPageRoute(builder: (_) => const PasswordScreen()),
+                    );
+
+                    if (verified == true && mounted) {
+                      _showTransferSuccessBanner(
+                        rootContext,
+                        amount,
+                        transfer.name,
+                      );
+                    }
+                  }
+                },
+                child: const Text('Transfer'),
+              ),
+            ],
+          ),
+    );
   }
 
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Text('Transfer Uang'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: const InputDecoration(labelText: 'Masukkan jumlah (Rp)'),
-              onChanged: updateFormattedAmount,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) return 'Masukkan jumlah';
-                final amount = int.tryParse(value);
-                if (amount == null || amount <= 0) return 'Jumlah tidak valid';
-                return null;
-              },
-            ),
-            const SizedBox(height: 8),
-            ValueListenableBuilder<String>(
-              valueListenable: formattedAmount,
-              builder: (_, value, __) {
-                return Text(
-                  value.isNotEmpty ? 'Jumlah: $value' : '',
-                  style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.w500),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
-        TextButton(
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              final amount = int.parse(_amountController.text);
-              Navigator.pop(context);
-
-              final verified = await Navigator.push<bool>(
-                rootContext,
-                MaterialPageRoute(builder: (_) => const PasswordScreen()),
-              );
-
-              if (verified == true && mounted) {
-                _showTransferSuccessBanner(rootContext, amount, transfer.name);
-              }
-            }
-          },
-          child: const Text('Transfer'),
-        ),
-      ],
-    ),
-  );
-}
-
-
-  void _showTransferSuccessBanner(BuildContext context, int amount, String name) {
+  void _showTransferSuccessBanner(
+    BuildContext context,
+    int amount,
+    String name,
+  ) {
     ScaffoldMessenger.of(context).clearMaterialBanners();
 
     final banner = MaterialBanner(
@@ -175,7 +195,8 @@ void _showTransferDialog(Transfer transfer) {
       leading: const Icon(Icons.check_circle, color: Colors.white),
       actions: [
         TextButton(
-          onPressed: () => ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
+          onPressed:
+              () => ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
           child: const Text('TUTUP', style: TextStyle(color: Colors.white)),
         ),
       ],
@@ -193,23 +214,29 @@ void _showTransferDialog(Transfer transfer) {
   void _deleteTransfer(int index) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Hapus Penerima'),
-        content: Text('Anda yakin ingin menghapus ${_beneficiaries[index].name}?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                _beneficiaries.removeAt(index);
-                _filterBeneficiaries();
-              });
-              Navigator.pop(context);
-            },
-            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Hapus Penerima'),
+            content: Text(
+              'Anda yakin ingin menghapus ${_beneficiaries[index].name}?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Batal'),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _beneficiaries.removeAt(index);
+                    _filterBeneficiaries();
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -237,7 +264,10 @@ void _showTransferDialog(Transfer transfer) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transfer', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Transfer',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.deepPurple,
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
@@ -246,16 +276,17 @@ void _showTransferDialog(Transfer transfer) {
         children: [
           _buildSearchBar(),
           Expanded(
-            child: _filteredBeneficiaries.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: _filteredBeneficiaries.length,
-                    itemBuilder: (context, index) {
-                      final transfer = _filteredBeneficiaries[index];
-                      return _buildTransferCard(transfer, index);
-                    },
-                  ),
+            child:
+                _filteredBeneficiaries.isEmpty
+                    ? _buildEmptyState()
+                    : ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: _filteredBeneficiaries.length,
+                      itemBuilder: (context, index) {
+                        final transfer = _filteredBeneficiaries[index];
+                        return _buildTransferCard(transfer, index);
+                      },
+                    ),
           ),
         ],
       ),
@@ -294,12 +325,18 @@ void _showTransferDialog(Transfer transfer) {
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 10,
+        ),
         leading: CircleAvatar(
           backgroundColor: Colors.grey[200],
           backgroundImage: AssetImage(transfer.logoAssetPath),
         ),
-        title: Text(transfer.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          transfer.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         subtitle: Text(
           "${transfer.alias.isNotEmpty ? '${transfer.alias} • ' : ''}${transfer.bankName} - ${transfer.accountNumber}",
         ),
@@ -307,7 +344,11 @@ void _showTransferDialog(Transfer transfer) {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(Icons.money, color: Color.fromARGB(255, 9, 215, 9), size: 20),
+              icon: const Icon(
+                Icons.money,
+                color: Color.fromARGB(255, 9, 215, 9),
+                size: 20,
+              ),
               onPressed: () => _showTransferDialog(transfer),
             ),
             IconButton(
@@ -327,16 +368,25 @@ void _showTransferDialog(Transfer transfer) {
         children: [
           Icon(Icons.people_outline, size: 80, color: Colors.grey[300]),
           const SizedBox(height: 16),
-          const Text('Belum Ada Penerima', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey)),
+          const Text(
+            'Belum Ada Penerima',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
+          ),
           const SizedBox(height: 8),
-          Text('Tekan tombol + untuk menambah penerima baru.', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey[600])),
+          Text(
+            'Tekan tombol + untuk menambah penerima baru.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey[600]),
+          ),
         ],
       ),
     );
   }
 }
-
-
 
 class AddTransferPage extends StatefulWidget {
   const AddTransferPage({super.key});
@@ -380,7 +430,10 @@ class _AddTransferPageState extends State<AddTransferPage> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('Tambah Penerima', style: TextStyle(color: Colors.white),),
+        title: const Text(
+          'Tambah Penerima',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
@@ -393,38 +446,47 @@ class _AddTransferPageState extends State<AddTransferPage> {
                 controller: _accountNumberController,
                 decoration: const InputDecoration(labelText: 'Nomor Rekening'),
                 keyboardType: TextInputType.number,
-                validator: (value) => value == null || value.isEmpty ? 'Wajib diisi' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty ? 'Wajib diisi' : null,
               ),
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Nama'),
-                validator: (value) => value == null || value.isEmpty ? 'Wajib diisi' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty ? 'Wajib diisi' : null,
               ),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Pilih Bank'),
                 value: _selectedBank,
-                items: _banks.map((bank) {
-                    return DropdownMenuItem(
-                      value: bank['name'],
-                      child: Row(
-                        children: [
-                          Image.asset(bank['logo']!, width: 24),
-                          const SizedBox(width: 10),
-                          Text(bank['name']!),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                items:
+                    _banks.map((bank) {
+                      return DropdownMenuItem(
+                        value: bank['name'],
+                        child: Row(
+                          children: [
+                            Image.asset(bank['logo']!, width: 24),
+                            const SizedBox(width: 10),
+                            Text(bank['name']!),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                 onChanged: (value) {
                   setState(() {
                     _selectedBank = value;
                   });
                 },
-                validator: (value) => value == null || value.isEmpty ? 'Pilih bank' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty ? 'Pilih bank' : null,
               ),
               TextFormField(
                 controller: _aliasController,
-                decoration: const InputDecoration(labelText: 'Alias (opsional)'),
+                decoration: const InputDecoration(
+                  labelText: 'Alias (opsional)',
+                ),
               ),
               const SizedBox(height: 24),
               ElevatedButton(
@@ -440,9 +502,14 @@ class _AddTransferPageState extends State<AddTransferPage> {
                     Navigator.pop(context, newTransfer);
                   }
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
-                child: const Text('Simpan', style: TextStyle(color: Colors.white)),
-              )
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                ),
+                child: const Text(
+                  'Simpan',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
