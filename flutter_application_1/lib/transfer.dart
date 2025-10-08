@@ -164,11 +164,15 @@ class _TransferPageState extends State<TransferPage> {
 
                     final verified = await Navigator.push<bool>(
                       rootContext,
+<<<<<<< HEAD
                       MaterialPageRoute(
                         builder:
                             (_) =>
                                 PasswordScreen(phoneNumber: widget.phoneNumber),
                       ),
+=======
+                      MaterialPageRoute(builder: (_) => const PasswordScreen()),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
                     );
 
                     if (verified == true && mounted) {

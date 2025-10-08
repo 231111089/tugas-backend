@@ -28,10 +28,23 @@ class BagiUangPage extends StatelessWidget {
         backgroundColor: Colors.deepPurple,
         title: Row(
           children: [
+<<<<<<< HEAD
             IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 Navigator.pop(context);
+=======
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+              ),
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
               },
             ),
             SizedBox(width: 10),

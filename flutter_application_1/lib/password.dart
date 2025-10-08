@@ -219,6 +219,7 @@ class _PasswordComponenState extends State<PasswordComponen> {
                       .toList(),
             ),
             SizedBox(height: 20),
+<<<<<<< HEAD
             if (!widget.isNewUser)
               GestureDetector(
                 onTap: () async {
@@ -233,6 +234,17 @@ class _PasswordComponenState extends State<PasswordComponen> {
                 },
                 child: Text('Lupa PIN?', style: TextStyle(color: Colors.white)),
               ),
+=======
+            GestureDetector(
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ForgotPinPage()),
+                );
+              },
+              child: Text('Forgot PIN', style: TextStyle(color: Colors.white)),
+            ),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
             SizedBox(height: 20),
             _buildKeypad(),
             SizedBox(height: 20),
@@ -245,6 +257,7 @@ class _PasswordComponenState extends State<PasswordComponen> {
                 ),
                 minimumSize: Size(200, 50),
               ),
+<<<<<<< HEAD
               onPressed: _isLoading ? null : _handleContinue,
               child:
                   _isLoading
@@ -257,6 +270,24 @@ class _PasswordComponenState extends State<PasswordComponen> {
                         ),
                       )
                       : Text(widget.isNewUser ? 'Daftar' : 'Masuk'),
+=======
+              onPressed: () async {
+                if (_isPinComplete()) {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SecurtyCode()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Masukkan sandi Anda terlebih dahulu'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: Text('Continue'),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
             ),
           ],
         ),

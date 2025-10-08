@@ -100,6 +100,7 @@ class _SecurtyCodeState extends State<SecurtyCode> {
                         ),
                       ),
                       onPressed: () async {
+<<<<<<< HEAD
                         // Validasi PIN
                         if (_enteredCode.length == 6) {
                           bool result = await createAccount(_enteredCode);
@@ -115,6 +116,12 @@ class _SecurtyCodeState extends State<SecurtyCode> {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('PIN harus 6 digit')),
+=======
+                        if (_formKey.currentState!.validate()) {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Home()),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
                           );
                         }
                       },

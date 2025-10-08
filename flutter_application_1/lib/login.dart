@@ -181,6 +181,7 @@ class _LoginComponenState extends State<LoginComponen> {
                           ),
                           minimumSize: Size(double.infinity, 50),
                         ),
+<<<<<<< HEAD
                         onPressed: _isLoading ? null : _handleLogin,
                         child:
                             _isLoading
@@ -196,6 +197,32 @@ class _LoginComponenState extends State<LoginComponen> {
                                   'Lanjutkan',
                                   style: TextStyle(color: Colors.white),
                                 ),
+=======
+                        onPressed:
+                            _isValid
+                                ? () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Password(),
+                                    ),
+                                  );
+                                }
+                                : () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Nomor HP harus 12 digit angka',
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                },
+                        child: Text(
+                          'Lanjutkan',
+                          style: TextStyle(color: Colors.white),
+                        ),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
                       ),
                     ],
                   ),

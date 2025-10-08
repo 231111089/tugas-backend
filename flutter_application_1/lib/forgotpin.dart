@@ -19,6 +19,7 @@ class _ForgotPinPageState extends State<ForgotPinPage> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   bool _isLoading = false;
 
+<<<<<<< HEAD
   @override
   void initState() {
     super.initState();
@@ -28,6 +29,10 @@ class _ForgotPinPageState extends State<ForgotPinPage> {
 
   Future<void> _handleReset() async {
     final phone = '+62${phoneController.text.trim()}';
+=======
+  void _handleReset() async {
+    final phone = phoneController.text.trim();
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
     final pin = newPinController.text.trim();
 
     // Validasi input
@@ -123,6 +128,7 @@ class _ForgotPinPageState extends State<ForgotPinPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+<<<<<<< HEAD
               SizedBox(height: 40),
               Icon(Icons.lock_reset, size: 80, color: Colors.white),
               SizedBox(height: 20),
@@ -203,12 +209,34 @@ class _ForgotPinPageState extends State<ForgotPinPage> {
                   filled: true,
                   fillColor: Colors.deepPurple.shade400,
                   prefixIcon: Icon(Icons.lock, color: Colors.white54),
+=======
+              Icon(Icons.phone_android, size: 80, color: Colors.white),
+              SizedBox(height: 20),
+              Text(
+                'Masukkan nomor telepon dan PIN baru Anda.',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 30),
+              TextField(
+                controller: phoneController,
+                keyboardType: TextInputType.phone,
+                maxLength: 12, // Batas maksimal 12 digit
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  counterText: '', // Menghilangkan teks penghitung karakter
+                  hintText: 'Nomor Telepon',
+                  hintStyle: TextStyle(color: Colors.white54),
+                  filled: true,
+                  fillColor: Colors.deepPurple.shade400,
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
+<<<<<<< HEAD
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _isLoading ? null : _handleReset,
@@ -218,6 +246,24 @@ class _ForgotPinPageState extends State<ForgotPinPage> {
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
+=======
+              SizedBox(height: 20),
+              TextField(
+                controller: newPinController,
+                obscureText: true,
+                maxLength: 5,
+                keyboardType: TextInputType.number,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  counterText: '',
+                  hintText: 'PIN Baru',
+                  hintStyle: TextStyle(color: Colors.white54),
+                  filled: true,
+                  fillColor: Colors.deepPurple.shade400,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
                   ),
                 ),
                 child:
@@ -238,6 +284,22 @@ class _ForgotPinPageState extends State<ForgotPinPage> {
                           ),
                         ),
               ),
+<<<<<<< HEAD
+=======
+              SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: _handleReset,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.deepPurple,
+                  minimumSize: Size(200, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                child: Text('Reset PIN'),
+              ),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
             ],
           ),
         ),
