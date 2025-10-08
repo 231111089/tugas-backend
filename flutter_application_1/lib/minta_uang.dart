@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'home.dart';
 
 class BagiUangApp extends StatelessWidget {
   @override
@@ -29,18 +28,11 @@ class BagiUangPage extends StatelessWidget {
         backgroundColor: Colors.deepPurple,
         title: Row(
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-              ),
+            IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
+                Navigator.pop(context);
               },
-              child: Icon(Icons.arrow_back, color: Colors.white),
             ),
             SizedBox(width: 10),
             Text(
@@ -49,6 +41,7 @@ class BagiUangPage extends StatelessWidget {
             ),
           ],
         ),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

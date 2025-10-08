@@ -1,3 +1,5 @@
+//home.dart
+
 import 'package:flutter/material.dart';
 import 'package:tugas/kirim_uang.dart';
 import 'package:tugas/minta_uang.dart';
@@ -17,7 +19,9 @@ import 'package:intl/intl.dart';
 import 'transfer.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final String phoneNumber;
+
+  const Home({super.key, required this.phoneNumber});
 
   @override
   State<Home> createState() => _HomeState();
@@ -26,8 +30,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomePageContent(),
+  List<Widget> get _pages => [
+    HomePageContent(phoneNumber: widget.phoneNumber),
     const History(),
     const QrisPage(),
     const Pocket(),
@@ -300,7 +304,7 @@ class _HomeState extends State<Home> {
               child: const Text('Logout'),
               onPressed: () {
                 Navigator.of(context).pop();
-                // Add logout logic here
+                Navigator.of(context).popUntil((route) => route.isFirst);
               },
             ),
           ],
@@ -353,16 +357,20 @@ class _HomeState extends State<Home> {
 }
 
 class HomePageContent extends StatelessWidget {
-  const HomePageContent({super.key});
+  final String phoneNumber;
+
+  const HomePageContent({super.key, required this.phoneNumber});
 
   @override
   Widget build(BuildContext context) {
-    return const HomeHeaderBody();
+    return HomeHeaderBody(phoneNumber: phoneNumber);
   }
 }
 
 class HomeHeaderBody extends StatefulWidget {
-  const HomeHeaderBody({super.key});
+  final String phoneNumber;
+
+  const HomeHeaderBody({super.key, required this.phoneNumber});
 
   @override
   State<HomeHeaderBody> createState() => _HomeHeaderBodyState();
@@ -512,7 +520,11 @@ class _HomeHeaderBodyState extends State<HomeHeaderBody> {
           final added = await Navigator.push<int>(
             context,
             MaterialPageRoute(
-              builder: (_) => TopUpPage(currentBalance: _currentBalance),
+              builder:
+                  (_) => TopUpPage(
+                    currentBalance: _currentBalance,
+                    phoneNumber: widget.phoneNumber,
+                  ),
             ),
           );
           if (added != null && added > 0) {
@@ -739,7 +751,10 @@ class _HomeHeaderBodyState extends State<HomeHeaderBody> {
         'onTap': () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TransferPage()),
+            MaterialPageRoute(
+              builder:
+                  (context) => TransferPage(phoneNumber: widget.phoneNumber),
+            ),
           );
         },
       },
@@ -776,7 +791,11 @@ class _HomeHeaderBodyState extends State<HomeHeaderBody> {
           final added = await Navigator.push<int>(
             context,
             MaterialPageRoute(
-              builder: (_) => TopUpPage(currentBalance: _currentBalance),
+              builder:
+                  (_) => TopUpPage(
+                    currentBalance: _currentBalance,
+                    phoneNumber: widget.phoneNumber,
+                  ),
             ),
           );
           if (added != null && added > 0) {

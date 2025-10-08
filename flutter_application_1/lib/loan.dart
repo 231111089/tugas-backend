@@ -891,7 +891,7 @@ class _LoanPageState extends State<LoanPage>
     );
   }
 
-  void _makePayment(String loanId) {
+  void _makePayment(String loanId) async {
     // Find the loan
     int loanIndex = activeLoans.indexWhere((loan) => loan['id'] == loanId);
     if (loanIndex == -1) return;
@@ -903,7 +903,8 @@ class _LoanPageState extends State<LoanPage>
     TextEditingController paymentController = TextEditingController();
     paymentController.text = _formatCurrency(monthlyPayment);
 
-    showDialog(
+    // Use await showDialog to get the payment amount
+    final result = await showDialog<int>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -996,7 +997,7 @@ class _LoanPageState extends State<LoanPage>
           actions: [
             TextButton(
               child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).pop(null),
             ),
             TextButton(
               child: const Text('Pay Now'),
@@ -1032,14 +1033,18 @@ class _LoanPageState extends State<LoanPage>
                   );
                   return;
                 }
-                Navigator.of(context).pop();
-                _processPayment(loanId, paymentAmount);
+                // Return amount to the caller
+                Navigator.of(context).pop(paymentAmount);
               },
             ),
           ],
         );
       },
-    );
+    ); // end await showDialog
+
+    if (result != null) {
+      _processPayment(loanId, result);
+    }
   }
 
   void _processPayment(String loanId, int paymentAmount) {

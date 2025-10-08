@@ -13,8 +13,8 @@ class _ScreenState extends State<Screen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.of(
+    Timer(const Duration(seconds: 3), () async {
+      await Navigator.of(
         context,
       ).pushReplacement(MaterialPageRoute(builder: (_) => Login()));
     });

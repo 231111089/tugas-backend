@@ -1,3 +1,5 @@
+//topup.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -5,8 +7,13 @@ import 'passwordScreen.dart';
 
 class TopUpPage extends StatefulWidget {
   final int currentBalance;
+  final String phoneNumber;
 
-  const TopUpPage({super.key, required this.currentBalance});
+  const TopUpPage({
+    super.key,
+    required this.currentBalance,
+    required this.phoneNumber,
+  });
 
   @override
   State<TopUpPage> createState() => _TopUpPageState();
@@ -31,7 +38,9 @@ class _TopUpPageState extends State<TopUpPage> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -47,7 +56,10 @@ class _TopUpPageState extends State<TopUpPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Dari Bank', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text(
+              'Dari Bank',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 10),
             Wrap(
               spacing: 10,
@@ -65,7 +77,10 @@ class _TopUpPageState extends State<TopUpPage> {
               }),
             ),
             const SizedBox(height: 30),
-            const Text('Jumlah Top Up', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text(
+              'Jumlah Top Up',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 10),
             TextField(
               controller: _amountController,
@@ -85,11 +100,15 @@ class _TopUpPageState extends State<TopUpPage> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 14,
+                  ),
                 ),
                 onPressed: () async {
-                  final cleaned =
-                      _amountController.text.replaceAll('.', '').replaceAll(',', '');
+                  final cleaned = _amountController.text
+                      .replaceAll('.', '')
+                      .replaceAll(',', '');
                   final int? amount = int.tryParse(cleaned);
 
                   if (_selectedBankIndex == null) {
@@ -99,7 +118,11 @@ class _TopUpPageState extends State<TopUpPage> {
                   } else {
                     final pinVerified = await Navigator.push<bool>(
                       context,
-                      MaterialPageRoute(builder: (_) => const PasswordScreen()),
+                      MaterialPageRoute(
+                        builder:
+                            (_) =>
+                                PasswordScreen(phoneNumber: widget.phoneNumber),
+                      ),
                     );
 
                     if (pinVerified == true) {
@@ -109,7 +132,10 @@ class _TopUpPageState extends State<TopUpPage> {
                     }
                   }
                 },
-                child: const Text('Isi Sekarang', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: const Text(
+                  'Isi Sekarang',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
               ),
             ),
           ],

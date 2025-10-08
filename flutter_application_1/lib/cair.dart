@@ -32,7 +32,7 @@ class _CairPageState extends State<CairPage> {
     }
   }
 
-  void _submitWithdrawal() {
+  void _submitWithdrawal() async {
     final amount = _amountController.text.trim();
     final pin = _pinController.text.trim();
 

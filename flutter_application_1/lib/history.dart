@@ -123,7 +123,7 @@ class _HistoryState extends State<History> {
     },
   ];
 
-  // Filtered transactions based on selected filters
+  // Filtered transactions based on selected criteria
   List<Map<String, dynamic>> filteredTransactions = [];
 
   @override

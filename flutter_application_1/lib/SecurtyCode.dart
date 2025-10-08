@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'home.dart';
 
 class SecurtyCode extends StatefulWidget {
-  const SecurtyCode({super.key});
+  final String phoneNumber;
+
+  const SecurtyCode({super.key, required this.phoneNumber});
 
   @override
   State<SecurtyCode> createState() => _SecurtyCodeState();
@@ -12,6 +13,7 @@ class SecurtyCode extends StatefulWidget {
 class _SecurtyCodeState extends State<SecurtyCode> {
   final _formKey = GlobalKey<FormState>();
   String _enteredCode = '';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -97,11 +99,22 @@ class _SecurtyCodeState extends State<SecurtyCode> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Home()),
+                      onPressed: () async {
+                        // Validasi PIN
+                        if (_enteredCode.length == 6) {
+                          bool result = await createAccount(_enteredCode);
+                          if (result) {
+                            // Navigasi ke halaman berikutnya
+                            Navigator.pushReplacementNamed(context, '/home');
+                          } else {
+                            // Tampilkan pesan error
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Gagal membuat akun. Silakan coba lagi.')),
+                            );
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('PIN harus 6 digit')),
                           );
                         }
                       },
@@ -118,5 +131,16 @@ class _SecurtyCodeState extends State<SecurtyCode> {
         ),
       ),
     );
+  }
+
+  Future<bool> createAccount(String pin) async {
+    // Proses pembuatan akun, misal simpan ke database atau panggil API
+    try {
+      // Contoh: simpan ke database lokal
+      // await DatabaseHelper.instance.insertUser(pin);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

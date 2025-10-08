@@ -1,6 +1,9 @@
+// login.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'password.dart';
+import 'database_helper.dart';
 
 class Login extends StatelessWidget {
   @override
@@ -20,7 +23,9 @@ class LoginComponen extends StatefulWidget {
 
 class _LoginComponenState extends State<LoginComponen> {
   final TextEditingController _phoneController = TextEditingController();
+  final DatabaseHelper _dbHelper = DatabaseHelper();
   bool _isValid = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -32,6 +37,40 @@ class _LoginComponenState extends State<LoginComponen> {
     setState(() {
       _isValid = _phoneController.text.trim().length == 12;
     });
+  }
+
+  Future<void> _handleLogin() async {
+    if (!_isValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Nomor HP harus 12 digit angka'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final phone = '+62${_phoneController.text.trim()}';
+
+    // Cek apakah user sudah terdaftar
+    final isRegistered = await _dbHelper.isUserRegistered(phone);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    // Navigate ke password page dengan informasi user
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => Password(phoneNumber: phone, isNewUser: !isRegistered),
+      ),
+    );
   }
 
   @override
@@ -59,10 +98,10 @@ class _LoginComponenState extends State<LoginComponen> {
                     shape: BoxShape.circle,
                   ),
                   child: Center(
-                    child: Image.asset(
-                      'asset/logo2.png',
-                      width: 100,
-                      height: 100,
+                    child: Icon(
+                      Icons.account_balance_wallet,
+                      size: 80,
+                      color: Colors.deepPurple,
                     ),
                   ),
                 ),
@@ -118,6 +157,7 @@ class _LoginComponenState extends State<LoginComponen> {
                               ],
                               decoration: InputDecoration(
                                 border: UnderlineInputBorder(),
+                                hintText: '81234567890',
                               ),
                             ),
                           ),
@@ -141,30 +181,21 @@ class _LoginComponenState extends State<LoginComponen> {
                           ),
                           minimumSize: Size(double.infinity, 50),
                         ),
-                        onPressed:
-                            _isValid
-                                ? () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Password(),
-                                    ),
-                                  );
-                                }
-                                : () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Nomor HP harus 12 digit angka',
-                                      ),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                },
-                        child: Text(
-                          'Lanjutkan',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        onPressed: _isLoading ? null : _handleLogin,
+                        child:
+                            _isLoading
+                                ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : Text(
+                                  'Lanjutkan',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                       ),
                     ],
                   ),

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'screen.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // import 'home.dart';
 void main() {
+  // Inisialisasi databaseFactory untuk desktop/Windows
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+
   runApp(const MyApp());
 }
 

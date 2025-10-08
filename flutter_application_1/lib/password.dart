@@ -1,18 +1,33 @@
+// password.dart
+
 import 'package:flutter/material.dart';
 import 'SecurtyCode.dart';
 import 'forgotpin.dart';
+import 'database_helper.dart';
 
 class Password extends StatelessWidget {
+  final String phoneNumber;
+  final bool isNewUser;
+
+  const Password({Key? key, required this.phoneNumber, required this.isNewUser})
+    : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: PasswordComponen(),
-      debugShowCheckedModeBanner: false,
-    );
+    return PasswordComponen(phoneNumber: phoneNumber, isNewUser: isNewUser);
   }
 }
 
 class PasswordComponen extends StatefulWidget {
+  final String phoneNumber;
+  final bool isNewUser;
+
+  const PasswordComponen({
+    Key? key,
+    required this.phoneNumber,
+    required this.isNewUser,
+  }) : super(key: key);
+
   @override
   State<PasswordComponen> createState() => _PasswordComponenState();
 }
@@ -22,6 +37,8 @@ class _PasswordComponenState extends State<PasswordComponen> {
     5,
     (_) => TextEditingController(),
   );
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  bool _isLoading = false;
 
   void _handleKeypadInput(String value) {
     for (final controller in _pinControllers) {
@@ -49,17 +66,124 @@ class _PasswordComponenState extends State<PasswordComponen> {
     return _pinControllers.every((controller) => controller.text.isNotEmpty);
   }
 
+  String _getPin() {
+    return _pinControllers.map((c) => c.text).join();
+  }
+
+  Future<void> _handleContinue() async {
+    if (!_isPinComplete()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Masukkan PIN lengkap terlebih dahulu'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final pin = _getPin();
+
+    if (widget.isNewUser) {
+      // Registrasi user baru
+      final success = await _dbHelper.registerUser(widget.phoneNumber, pin);
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Akun berhasil dibuat!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SecurtyCode(phoneNumber: widget.phoneNumber),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal membuat akun. Silakan coba lagi.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      // Login user yang sudah terdaftar
+      final isValid = await _dbHelper.validateLogin(widget.phoneNumber, pin);
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (isValid) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Login berhasil!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SecurtyCode(phoneNumber: widget.phoneNumber),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('PIN salah! Silakan coba lagi.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        // Clear PIN fields
+        for (var controller in _pinControllers) {
+          controller.clear();
+        }
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _pinControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurple,
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Masukkan PIN Anda',
+              widget.isNewUser ? 'Buat PIN Anda' : 'Masukkan PIN Anda',
               style: TextStyle(color: Colors.white, fontSize: 22),
+            ),
+            SizedBox(height: 10),
+            Text(
+              widget.phoneNumber,
+              style: TextStyle(color: Colors.white70, fontSize: 16),
             ),
             SizedBox(height: 20),
             Row(
@@ -74,6 +198,7 @@ class _PasswordComponenState extends State<PasswordComponen> {
                           child: TextField(
                             controller: controller,
                             maxLength: 1,
+                            readOnly: true,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 18, color: Colors.white),
                             keyboardType: TextInputType.number,
@@ -94,15 +219,20 @@ class _PasswordComponenState extends State<PasswordComponen> {
                       .toList(),
             ),
             SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ForgotPinPage()),
-                );
-              },
-              child: Text('Forgot PIN', style: TextStyle(color: Colors.white)),
-            ),
+            if (!widget.isNewUser)
+              GestureDetector(
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              ForgotPinPage(phoneNumber: widget.phoneNumber),
+                    ),
+                  );
+                },
+                child: Text('Lupa PIN?', style: TextStyle(color: Colors.white)),
+              ),
             SizedBox(height: 20),
             _buildKeypad(),
             SizedBox(height: 20),
@@ -115,22 +245,18 @@ class _PasswordComponenState extends State<PasswordComponen> {
                 ),
                 minimumSize: Size(200, 50),
               ),
-              onPressed: () {
-                if (_isPinComplete()) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SecurtyCode()),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Masukkan sandi Anda terlebih dahulu'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              child: Text('Continue'),
+              onPressed: _isLoading ? null : _handleContinue,
+              child:
+                  _isLoading
+                      ? SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.deepPurple,
+                          strokeWidth: 2,
+                        ),
+                      )
+                      : Text(widget.isNewUser ? 'Daftar' : 'Masuk'),
             ),
           ],
         ),

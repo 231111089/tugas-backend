@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tugas/home.dart';
 
 class KirimUangApp extends StatelessWidget {
   @override
@@ -43,18 +42,11 @@ class KirimUangPage extends StatelessWidget {
         backgroundColor: Colors.deepPurple,
         title: Row(
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-              ),
+            IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
+                Navigator.pop(context);
               },
-              child: Icon(Icons.arrow_back, color: Colors.white),
             ),
             SizedBox(width: 10),
             Text(
@@ -63,6 +55,7 @@ class KirimUangPage extends StatelessWidget {
             ),
           ],
         ),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
