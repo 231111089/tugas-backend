@@ -219,6 +219,13 @@ class _PasswordComponenState extends State<PasswordComponen> {
                       .toList(),
             ),
             SizedBox(height: 20),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/password.dart
+=======
+<<<<<<< HEAD
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/password.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
             if (!widget.isNewUser)
               GestureDetector(
                 onTap: () async {
@@ -233,6 +240,23 @@ class _PasswordComponenState extends State<PasswordComponen> {
                 },
                 child: Text('Lupa PIN?', style: TextStyle(color: Colors.white)),
               ),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/password.dart
+=======
+=======
+            GestureDetector(
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ForgotPinPage()),
+                );
+              },
+              child: Text('Forgot PIN', style: TextStyle(color: Colors.white)),
+            ),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/password.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
             SizedBox(height: 20),
             _buildKeypad(),
             SizedBox(height: 20),
@@ -245,6 +269,13 @@ class _PasswordComponenState extends State<PasswordComponen> {
                 ),
                 minimumSize: Size(200, 50),
               ),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/password.dart
+=======
+<<<<<<< HEAD
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/password.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
               onPressed: _isLoading ? null : _handleContinue,
               child:
                   _isLoading
@@ -257,6 +288,30 @@ class _PasswordComponenState extends State<PasswordComponen> {
                         ),
                       )
                       : Text(widget.isNewUser ? 'Daftar' : 'Masuk'),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/password.dart
+=======
+=======
+              onPressed: () async {
+                if (_isPinComplete()) {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SecurtyCode()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Masukkan sandi Anda terlebih dahulu'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: Text('Continue'),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/password.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
             ),
           ],
         ),

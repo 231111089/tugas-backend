@@ -24,6 +24,10 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'cashease.db');
     print('📍 Database path: $path');
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
     return await openDatabase(path, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
@@ -31,11 +35,25 @@ class DatabaseHelper {
     print('🔨 Creating database tables...');
     
     // Table users
+<<<<<<< HEAD
+=======
+=======
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
+  }
+
+  Future<void> _onCreate(Database db, int version) async {
+    print('🔨 Creating database table...');
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
     await db.execute('''
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         phone TEXT UNIQUE NOT NULL,
         pin TEXT NOT NULL,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
         balance INTEGER DEFAULT 0,
         created_at TEXT NOT NULL
       )
@@ -135,6 +153,15 @@ class DatabaseHelper {
         )
       ''');
     }
+<<<<<<< HEAD
+=======
+=======
+        created_at TEXT NOT NULL
+      )
+    ''');
+    print('✅ Table users created successfully');
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
   }
 
   // Hash PIN untuk keamanan
@@ -144,8 +171,16 @@ class DatabaseHelper {
     return digest.toString();
   }
 
+<<<<<<< HEAD
   // ==================== USER METHODS ====================
   
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+  // ==================== USER METHODS ====================
+  
+=======
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
   // Registrasi user baru
   Future<bool> registerUser(String phone, String pin) async {
     try {
@@ -155,10 +190,24 @@ class DatabaseHelper {
 
       final db = await database;
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
       final existingUser = await getUserByPhone(phone);
       if (existingUser != null) {
         print('❌ User already exists!');
         return false;
+<<<<<<< HEAD
+=======
+=======
+      // Cek apakah nomor sudah terdaftar
+      final existingUser = await getUserByPhone(phone);
+      if (existingUser != null) {
+        print('❌ User already exists!');
+        return false; // User sudah ada
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
       }
 
       print('✅ Phone number available, creating user...');
@@ -169,12 +218,26 @@ class DatabaseHelper {
       final result = await db.insert('users', {
         'phone': phone,
         'pin': hashedPin,
+<<<<<<< HEAD
         'balance': 0,
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+        'balance': 0,
+=======
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
         'created_at': DateTime.now().toIso8601String(),
       }, conflictAlgorithm: ConflictAlgorithm.abort);
 
       print('✅ User registered successfully with ID: $result');
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+=======
+      // Verifikasi data tersimpan
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
       final savedUser = await getUserByPhone(phone);
       print('🔍 Verification - User saved: ${savedUser != null}');
 
@@ -231,7 +294,15 @@ class DatabaseHelper {
     }
   }
 
+<<<<<<< HEAD
   // Verifikasi PIN
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+  // Verifikasi PIN
+=======
+  // Verifikasi PIN (untuk password screen)
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
   Future<bool> verifyPin(String phone, String pin) async {
     try {
       final db = await database;
@@ -281,6 +352,10 @@ class DatabaseHelper {
     return user != null;
   }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
   // ==================== BALANCE METHODS ====================
   
   // Get user balance
@@ -585,6 +660,11 @@ class DatabaseHelper {
 
   // ==================== UTILITY METHODS ====================
   
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
   // Get all users (untuk debugging)
   Future<List<Map<String, dynamic>>> getAllUsers() async {
     try {
@@ -604,12 +684,21 @@ class DatabaseHelper {
       print('🗑️ Deleting user: $phone');
 
       final db = await database;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
       
       // Delete related data first
       await db.delete('transactions', where: 'user_phone = ?', whereArgs: [phone]);
       await db.delete('beneficiaries', where: 'user_phone = ?', whereArgs: [phone]);
       await db.delete('pockets', where: 'user_phone = ?', whereArgs: [phone]);
       
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
       final result = await db.delete(
         'users',
         where: 'phone = ?',
@@ -628,13 +717,30 @@ class DatabaseHelper {
   Future<void> clearAllData() async {
     try {
       final db = await database;
+<<<<<<< HEAD
       await db.delete('transactions');
       await db.delete('beneficiaries');
       await db.delete('pockets');
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+      await db.delete('transactions');
+      await db.delete('beneficiaries');
+      await db.delete('pockets');
+=======
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
       await db.delete('users');
       print('🧹 All data cleared');
     } catch (e) {
       print('❌ Error clearing data: $e');
     }
   }
+<<<<<<< HEAD
 }
+=======
+<<<<<<< HEAD:cashease/lib/database_helper.dart
+}
+=======
+}
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/database_helper.dart
+>>>>>>> 86912e1ad373dfbf49d95c5a768904e193dd72d6
