@@ -164,11 +164,21 @@ class _TransferPageState extends State<TransferPage> {
 
                     final verified = await Navigator.push<bool>(
                       rootContext,
+<<<<<<< HEAD:cashease/lib/transfer.dart
+=======
+<<<<<<< HEAD
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/transfer.dart
                       MaterialPageRoute(
                         builder:
                             (_) =>
                                 PasswordScreen(phoneNumber: widget.phoneNumber),
                       ),
+<<<<<<< HEAD:cashease/lib/transfer.dart
+=======
+=======
+                      MaterialPageRoute(builder: (_) => const PasswordScreen()),
+>>>>>>> 1c996fe31bd1e1ea17f1c744cf78530e5318ed4c
+>>>>>>> f35d052d8dde6515ca6ac8be3d52ef8cee753b8f:flutter_application_1/lib/transfer.dart
                     );
 
                     if (verified == true && mounted) {
